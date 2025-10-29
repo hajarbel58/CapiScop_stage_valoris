@@ -1,0 +1,107 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🔝 Barre de navigation */
+.navbar {
+  background-color: #34697c;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 22px;
+  color: #333;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 🔍 Icône de recherche */
+.search-icon {
+  font-size: 24px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* 📱 Menu responsive */
+.menu-toggle {
+  font-size: 26px;
+  display: none;
+  color: #555;
+  cursor: pointer;
+}
+
+/* 📦 Barre flottante à droite */
+.floating-bar {
+  position: fixed;
+  top: 40%;
+  right: 0;
+  background-color: #ff6600;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1001;
+}
+
+.floating-bar .icon {
+  color: white;
+  font-size: 22px;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.floating-bar .icon:hover {
+  background-color: #e65c00;
+  border-radius: 5px 0 0 5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: #fff;
+    flex-direction: column;
+    width: 100%;
+    text-align: right;
+    padding: 10px 20px;
+  }
+
+  .nav-links a {
+    margin: 10px 0;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+}
