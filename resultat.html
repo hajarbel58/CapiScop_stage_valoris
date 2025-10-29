@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Résultats OPCVM - CapiScoop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0e7ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 80px 30px 40px;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(0, 191, 255, 0.7);
+      cursor: default;
+      user-select: none;
+    }
+    .lang-switch {
+      background: rgba(30, 144, 255, 0.15);
+      border-radius: 50px;
+      display: flex;
+      overflow: hidden;
+      width: 120px;
+      height: 32px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #66bacf;
+      border: 1px solid #1e90ff66;
+      box-shadow: 0 0 8px #1e90ff66;
+      transition: background 0.3s, color 0.3s;
+    }
+    .lang-switch div {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s, color 0.3s;
+      border-radius: 50px;
+    }
+    .lang-switch .active {
+      background: #1e90ffcc;
+      color: #e0e7ff;
+      font-weight: 700;
+      box-shadow: 0 0 15px #00bfffcc;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.2rem;
+      text-align: center;
+      color: #66bacf;;
+      margin-bottom: 40px;
+      text-shadow: 0 0 12px #00bfffcc;
+      user-select: none;
+    }
+
+    .message {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #1e90ffcc;
+      font-weight: 600;
+      margin-bottom: 40px;
+    }
+
+    .carousel-container {
+      position: relative;
+      max-width: 100vw;
+      margin: auto;
+      padding: 0 10px;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 18px;
+      padding: 20px 0;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel::-webkit-scrollbar {
+      height: 8px;
+    }
+    .carousel::-webkit-scrollbar-thumb {
+      background: #66bacf;
+      border-radius: 20px;
+    }
+    .carousel::-webkit-scrollbar-track {
+      background: rgba(255 255 255 / 0.05);
+      border-radius: 20px;
+    }
+
+    .card {
+      min-width: 320px;
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+      background: rgba(255 255 255 / 0.05);
+      border-radius: 20px;
+      padding: 20px 24px;
+      box-shadow: inset 0 0 15px #1e90ff44, 0 0 25px #00bfff55;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.35s ease, transform 0.35s ease;
+      color: #cbd5e1;
+      font-weight: 500;
+      cursor: default;
+      user-select: text;
+    }
+    .card:hover {
+      box-shadow: inset 0 0 25px #1e90ff88, 0 0 35px #00bfffaa;
+      transform: translateY(-6px);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -70%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(30,144,255,0) 0%, rgba(30,144,255,0.15) 50%, rgba(30,144,255,0) 100%);
+      transform: skewX(-25deg);
+      pointer-events: none;
+    }
+    .card:hover::before {
+      animation: sweep 1.2s forwards;
+    }
+    @keyframes sweep {
+      0% { left: -70%; }
+      100% { left: 120%; }
+    }
+
+    .card h2 {
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      color: #00bfff;
+      text-shadow: 0 0 10px #00bfffaa;
+      line-height: 1.2;
+    }
+
+    .info {
+      margin-bottom: 12px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      color: #a0aec0;
+    }
+    .info strong {
+      min-width: 160px;
+      color: #00bfff;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .material-icons {
+      font-size: 20px;
+      margin-right: 12px;
+      color: #00bfff;
+      flex-shrink: 0;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1e90ffcc;
+      border: none;
+      color: #e0e7ff;
+      font-size: 2.4rem;
+      cursor: pointer;
+      padding: 14px 20px;
+      border-radius: 50%;
+      z-index: 4;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 0 15px #1e90ffcc;
+      user-select: none;
+    }
+    .nav-button:hover {
+      background: #66bacf;
+      box-shadow: 0 0 25px #66bacf;
+      transform: scale(1.15);
+    }
+    .nav-left {
+      left: 14px;
+    }
+    .nav-right {
+      right: 14px;
+    }
+
+    .back-link {
+      display: block;
+      margin: 50px auto 0;
+      text-align: center;
+      background: rgba(255 255 255 / 0.1);
+      padding: 16px 38px;
+      border-radius: 40px;
+      color: #66bacf;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      max-width: 280px;
+      box-shadow: 0 0 15px #66bacf;
+      user-select: none;
+    }
+    .back-link:hover {
+      background: rgba(255 255 255 / 0.2);
+      box-shadow: 0 0 30px #66bacf;
+      color: #e0e7ff;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">CapiScoop</div>
+  <div class="lang-switch" role="group">
+    <div class="active" id="fr-btn">FR</div>
+    <div id="en-btn">EN</div>
+  </div>
+</header>
+
+<h1>Résultats pour "{{ nom }}"</h1>
+
+{% if message %}
+  <p class="message">{{ message }}</p>
+{% else %}
+<div class="carousel-container">
+  <button class="nav-button nav-left" onclick="scrollCarousel(-1)">❮</button>
+  <div class="carousel" id="carousel">
+    {% for row in resultat %}
+      <article class="card" tabindex="0" title="{{ row['denomination_opcvm'] }}">
+        <h2>{{ row['denomination_opcvm'] }}</h2>
+        <div class="info"><span class="material-icons">confirmation_number</span><strong>Code ISIN:</strong> {{ row['code_isin'] }}</div>
+        <div class="info"><span class="material-icons">business</span><strong>Société de Gestion:</strong> {{ row['societe_de_gestion'] }}</div>
+        <div class="info"><span class="material-icons">trending_up</span><strong>Performance Totale:</strong> {{ '%.2f'|format(row['performance_totale']) }}</div>
+        <div class="info"><span class="material-icons">show_chart</span><strong>Volatilité Annualisée:</strong> {{ '%.2f'|format(row['volatilite_annualisee']) }}</div>
+        <div class="info"><span class="material-icons">speed</span><strong>Bêta:</strong> {{ '%.2f'|format(row['beta']) }}</div>
+        <div class="info"><span class="material-icons">insights</span><strong>Alpha Annualisé:</strong> {{ '%.2f'|format(row['alpha_annualise']) }}</div>
+        <div class="info"><span class="material-icons">equalizer</span><strong>Sharpe Ratio Hebdo:</strong> {{ '%.2f'|format(row['sharpe_ratio_hebdo']) }}</div>
+        <div class="info"><span class="material-icons">track_changes</span><strong>Tracking Error:</strong> {{ '%.2f'|format(row['tracking_error']) }}</div>
+        <div class="info"><span class="material-icons">assessment</span><strong>Information Ratio:</strong> {{ '%.2f'|format(row['information_ratio']) }}</div>
+        <div class="info"><span class="material-icons">warning</span><strong>Drawdown Max:</strong> {{ '%.2f'|format(row['drawdown_max']) }}</div>
+        <div class="info"><span class="material-icons">group</span><strong>Cluster:</strong> {{ row['cluster'] }}</div>
+      </article>
+    {% endfor %}
+  </div>
+  <button class="nav-button nav-right" onclick="scrollCarousel(1)">❯</button>
+</div>
+{% endif %}
+
+<a href="/" class="back-link">← Revenir à l'accueil</a>
+
+<script>
+  function scrollCarousel(direction) {
+    const carousel = document.getElementById('carousel');
+    const scrollAmount = 350;
+    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

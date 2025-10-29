@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CapiScoop - Choix OPCVM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0; padding: 80px 30px 30px;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Poppins', sans-serif;
+      color: #e0e7ff;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+
+    nav .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+
+
+    nav .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(0, 191, 255, 0.9);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin-left: auto;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #66bacf;
+      border-bottom-color: #66bacf;
+    }
+
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    h3 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px #1e90ffaa;
+    }
+
+    select#profil {
+      width: 280px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 15px;
+      border: none;
+      background: rgba(255 255 255 / 0.1);
+      color: #cbd5e1;
+      box-shadow: 0 0 8px #1e90ff66;
+      backdrop-filter: blur(10px);
+      transition: box-shadow 0.3s ease;
+    }
+
+    select#profil:focus {
+      outline: none;
+      box-shadow: 0 0 15px #00bfffcc;
+      color: #fff;
+      background: rgba(255 255 255 / 0.15);
+    }
+
+    .btn-info {
+      font-size: 0.4rem;
+      padding: 6px 14px;
+      margin-left: 10px;
+      border-radius: 50px;
+      background: rgba(30, 144, 255, 0.15);
+      color: #1e90ff;
+      border: 1px solid #1e90ff66;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      font-weight: 500;
+    }
+
+    .btn-info:hover {
+      background: #1e90ff22;
+      transform: scale(1.05);
+    }
+
+    #texte-complet-opcvm {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.6s ease, opacity 0.6s ease;
+    }
+
+    #texte-complet-opcvm.visible {
+      max-height: 800px;
+      opacity: 1;
+      margin-top: 15px;
+    }
+
+    #liste-opcvm {
+      margin-top: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 18px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    #liste-opcvm::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #liste-opcvm::-webkit-scrollbar-thumb {
+      background: #66bacf;
+      border-radius: 20px;
+    }
+
+    .opcvm-card {
+      background: rgba(255 255 255 / 0.05);
+      border-radius: 20px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: inset 0 0 12px #1e90ff44, 0 0 18px #00bfff55;
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: box-shadow 0.25s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    .opcvm-card:hover {
+      box-shadow: inset 0 0 20px #1e90ff88, 0 0 28px #00bfffaa;
+      transform: translateY(-4px);
+    }
+
+    .opcvm-card input[type="checkbox"] {
+      opacity: 0;
+      width: 0; height: 0;
+      position: absolute;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: #555a6b88;
+      border-radius: 12px;
+      transition: background 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch::before {
+      content: "";
+      position: absolute;
+      top: 1.5px; left: 1.5px;
+      width: 19px;
+      height: 19px;
+      background: #cbd5e1;
+      border-radius: 50%;
+      transition: transform 0.3s ease, background 0.3s ease;
+      box-shadow: 0 2px 5px rgb(0 0 0 / 0.3);
+    }
+
+    .opcvm-card input[type="checkbox"]:checked + .toggle-switch {
+      background: #1e90ffcc;
+    }
+
+    .opcvm-card input[type="checkbox"]:checked + .toggle-switch::before {
+      transform: translateX(18px);
+      background: #e0e7ff;
+      box-shadow: 0 0 10px #1e90ffdd;
+    }
+
+    .opcvm-card span {
+      font-weight: 500;
+      font-size: 1rem;
+      color: #cbd5e1;
+      user-select: none;
+    }
+
+    button {
+      padding: 14px 38px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      background: #66bacf;
+      box-shadow: 0 0 15px #00bfffcc;
+      cursor: pointer;
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: #66bacf;
+      box-shadow: 0 0 30px #66bacf;
+      transform: scale(1.07);
+    }
+
+    @media (max-width: 480px) {
+      #liste-opcvm {
+        grid-template-columns: 1fr;
+        max-height: 280px;
+      }
+
+      select#profil {
+        width: 100%;
+      }
+
+      nav ul li {
+        margin-left: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">CapiScoop</div>
+  <ul>
+    
+
+      <li><a href="{{ url_for('house') }}">Accueil</a></li>
+    
+      
+      <li><a href="{{ url_for('page_opcvm') }}" class="active">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}" >ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+  </ul>
+</nav>
+
+<h3>Choisissez votre profil</h3>
+<select id="profil" aria-label="Choisissez votre profil">
+  <option value="prudent">Prudent</option>
+  <option value="modere">Modéré</option>
+  <option value="dynamique">Dynamique</option>
+</select>
+
+<!-- TEXTE INTRODUCTIF ET BOUTON DÉROULANT -->
+<div class="intro-opcvm">
+  <p>
+    Les <strong>OPCVM</strong>(Organismes de Placement Collectif en Valeurs Mobilières) sont des instruments financiers qui permettent à plusieurs investisseurs 
+    de mettre en commun leur épargne afin d’investir collectivement sur les marchés financiers.
+    <button class="btn-info" onclick="toggleTexte(this)">En savoir plus</button>
+  </p>
+
+  <div id="texte-complet-opcvm">
+    Gérés par des professionnels, les OPCVM offrent une solution accessible et diversifiée pour les particuliers comme pour les investisseurs institutionnels souhaitant optimiser leur portefeuille tout en maîtrisant le risque.
+
+<p>
+Un OPCVM collecte les fonds de différents investisseurs pour les placer dans un portefeuille diversifié composé de titres financiers (actions, obligations, instruments monétaires, etc.). Chaque investisseur détient des parts ou des actions de l’OPCVM, proportionnelles à son apport. La gestion du fonds est assurée par une société de gestion agréée par l’autorité des marchés financiers. Au Maroc, cette mission est assurée par l’AMMC (Autorité Marocaine du Marché des Capitaux).
+</p>
+<p>
+Types d’OPCVM:
+</p>
+<p>
+Il existe deux formes juridiques d’OPCVM :
+</p>
+1. Les Fonds Communs de Placement (FCP), qui sont des copropriétés de valeurs mobilières sans personnalité morale. Leur gestion est assurée par une société de gestion au nom des porteurs de parts.
+
+2. Les Sociétés d’Investissement à Capital Variable (SICAV), qui sont des sociétés anonymes ayant la personnalité morale et émettant des actions que les investisseurs peuvent acquérir.
+
+Selon leur stratégie d’investissement, les OPCVM se classent en plusieurs catégories :
+
+Les OPCVM actions : investis principalement en actions, avec un potentiel de rendement élevé mais un niveau de risque plus important.
+
+Les OPCVM obligataires : investis en obligations et autres titres de créance, adaptés aux profils plus prudents.
+
+Les OPCVM monétaires : investis à court terme sur des instruments monétaires, privilégiant la sécurité et la liquidité.
+
+Les OPCVM diversifiés : combinent plusieurs classes d’actifs (actions, obligations, monétaire) pour équilibrer rendement et risque.
+
+Les OPCVM contractuels : ont un objectif de performance défini à l’avance et une durée de placement déterminée.
+</p>
+Avantages des OPCVM:
+
+Les OPCVM présentent de nombreux avantages pour les investisseurs :
+
+Diversification du portefeuille, réduisant le risque global.
+
+Accès à une gestion professionnelle, assurée par des experts financiers.
+
+Transparence grâce à des rapports périodiques et la publication de la valeur liquidative.
+
+Accessibilité, même pour les petits épargnants, grâce à des seuils d’investissement peu élevés.
+
+Liquidité, avec la possibilité de souscrire ou de racheter des parts à tout moment (selon la fréquence définie).
+
+Valorisation et performance:
+
+La valeur d’un OPCVM est mesurée par sa valeur liquidative, calculée quotidiennement ou périodiquement selon les cas. Elle correspond à la valeur totale de l’actif net du fonds divisée par le nombre de parts en circulation. Le rendement d’un OPCVM dépend de la performance des actifs détenus dans le portefeuille et de la stratégie d’investissement adoptée.
+
+Indicateurs financiers à surveiller:
+
+Lors de l’analyse d’un OPCVM, plusieurs indicateurs permettent d’évaluer sa pertinence :
+
+La performance historique, qui donne une idée du rendement sur différentes périodes.
+
+La volatilité, qui mesure la fluctuation du rendement dans le temps.
+
+Le ratio de Sharpe, qui évalue le rendement par unité de risque.
+
+Le bêta, qui indique la sensibilité du fonds aux variations du marché.
+
+L’alpha, qui mesure la surperformance ou la sous-performance par rapport à un indice de référence.
+
+Réglementation et contrôle au Maroc:
+
+Les OPCVM sont régis par la loi n° 1-93-213 et sont soumis au contrôle de l’AMMC. Les sociétés de gestion doivent respecter des obligations strictes en matière de transparence, de gestion des risques, de séparation des actifs et de communication envers les investisseurs. Bank Al-Maghrib intervient également dans le cadre de la surveillance macro-prudentielle, notamment pour les OPCVM à caractère monétaire.
+
+Rôle économique des OPCVM:
+
+Les OPCVM jouent un rôle clé dans le développement du marché financier. En regroupant l’épargne de nombreux investisseurs, ils permettent le financement de projets privés et publics, participent à la dynamisation des marchés de capitaux et favorisent la culture financière au sein de la population. Ils sont également des outils importants pour la gestion de la trésorerie des entreprises et la constitution d’épargne à moyen et long terme pour les particuliers.
+
+Conclusion:
+
+Les OPCVM sont des outils performants et souples qui répondent à des besoins variés : placement à court terme, constitution d’un portefeuille diversifié, recherche de performance ou gestion prudente. Adaptés à tous les profils d’investisseurs, ils constituent aujourd’hui une solution incontournable dans une stratégie d’investissement réfléchie. Il est cependant essentiel de bien comprendre les objectifs, les risques et les frais liés à chaque fonds avant d’investir.
+
+
+  </div>
+</div>
+
+<h3>Sélectionnez vos OPCVM</h3>
+<div id="liste-opcvm" role="list"></div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; flex-wrap: wrap; gap: 20px;">
+  <button onclick="validerPanier()">Valider mon panier</button>
+  <button onclick="allerKMeans()">Voir OPCVM similaires</button>
+  
+</div>
+
+<script>
+  const opcvmList = [
+    "AD MOROCCAN EQUITY FUND", "AFRICAPITAL EQUITY", "ALPHA DYNAMIC FUND", "ATTAKAFOUL",
+    "ATTIJARI AL MOUCHARAKA", "ATTIJARI DIVIDEND FUND", "ATTIJARI FINANCES CORP VALEURS",
+    "BMCI PREMIUM EQUITY INCOME", "CAPITAL TRUST ACTIONS", "CAPITAL TRUST DYNAMIQUE", "CAT ACTIONS",
+    "CDG PERFORMANCE", "CDG SMALL & MID CAP", "CIMR MOUBADARA", "EMERGENCE PERFORMANCE",
+    "FCP AL BADIL CHAABI ASHOUM", "FCP AL IDDIKHAR CHAABI ACTIONS", "FCP CAM DYNAMIQUE",
+    "FCP CAPITAL ACTIONS PREMIUM", "FCP CAPITAL INDICE", "FCP CAPITAL MAGHREB", "FCP CAPITAL PARTICIPATIONS",
+    "FCP CIMR PATRIMOINE", "FCP CIMR TANMYA", "FCP EMERGENCE SELECTION", "FCP KENZ ACTIONS",
+    "FCP OPPORTUNITES", "LMV EQUITY INVEST", "PATRIMOINE AL MOUSSAHAMA", "PATRIMOINE MULTIVALEURS",
+    "PROFIL DYNAMIQUE", "RMA DYNAMIQUE", "RMA EQUITY MARKET", "RMA EXPANSION", "RMA MULTISTRATEGIES",
+    "RMA PERFORMANCE", "SAFAE", "SG EPARGNE PLUS ACTIONS", "SG EXPANSION", "WG ACTIONS_x","WG ACTIONS_y" ,"WG CAPITAL",
+    "WG EQUITY FUND", "WG TAYSSIR", "WINEO ACTIONS", "Winéo Équinoxe", "ATTIJARI PATRIMOINE VALEURS",
+    "CDM EXPANSION", "MAROC VALEURS"
+  ];
+
+  function genererListeOpcvm() {
+    const container = document.getElementById('liste-opcvm');
+    container.innerHTML = '';
+    opcvmList.forEach(opcvm => {
+      const label = document.createElement('label');
+      label.classList.add('opcvm-card');
+      label.setAttribute('role', 'listitem');
+      label.tabIndex = 0;
+      label.title = opcvm;
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = opcvm;
+      checkbox.name = 'opcvm';
+      checkbox.id = `opcvm_${opcvm.replace(/\s+/g, '_')}`;
+
+      const toggle = document.createElement('span');
+      toggle.classList.add('toggle-switch');
+
+      const text = document.createElement('span');
+      text.textContent = opcvm;
+
+      label.appendChild(checkbox);
+      label.appendChild(toggle);
+      label.appendChild(text);
+      container.appendChild(label);
+    });
+  }
+
+  function validerPanier() {
+  const profil = document.getElementById('profil').value;
+  const checkedOpcvm = Array.from(document.querySelectorAll('#liste-opcvm input[type=checkbox]:checked')).map(cb => cb.value);
+
+  if (checkedOpcvm.length === 0) {
+    alert("Veuillez sélectionner au moins un OPCVM");
+    return;
+  }
+
+  // Stocker les données dans le localStorage pour les récupérer dans jrb.html
+  localStorage.setItem('profil', profil);
+  localStorage.setItem('opcvmSelectionnes', JSON.stringify(checkedOpcvm));
+
+  // Redirection vers la page jrb.html
+  window.location.href = '/jrb';
+}
+
+function allerKMeans() {
+  window.location.href = '/recherche';
+}
+
+
+  function toggleTexte(button) {
+    const bloc = document.getElementById("texte-complet-opcvm");
+    bloc.classList.toggle("visible");
+    button.textContent = bloc.classList.contains("visible") ? "Masquer" : "En savoir plus";
+  }
+
+  window.onload = genererListeOpcvm;
+  function genererPortefeuille() {
+  const profil = document.getElementById('profil').value;
+  // Redirection vers la page aleatoire avec le profil en paramètre GET
+  window.location.href = `/aleatoire?profil=${encodeURIComponent(profil)}`;
+}
+</script>
+
+</body>
+</html>

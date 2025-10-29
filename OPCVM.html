@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accueil OPCVM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 80px 30px 30px;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Poppins', sans-serif;
+      color: #e0e7ff;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(102, 186, 207, 0.9);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #66bacf;
+      border-bottom-color: #66bacf;
+    }
+
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    /* --- Barre des tickers --- */
+    .ticker-bar {
+      width: 100%;
+      overflow: hidden;
+      background-color: #0f2027;
+      border-top: 1px solid #14213d;
+      border-bottom: 1px solid #14213d;
+      position: fixed;
+      top: 60px;
+      z-index: 999;
+      padding: 8px 0;
+    }
+
+    .ticker-track {
+      display: flex;
+      animation: scroll-left 40s linear infinite;
+      gap: 12px;
+    }
+
+    .ticker-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 100px;
+      background-color: #1c2b38;
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      text-align: center;
+      color: #ffffff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .ticker-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #66bacf;
+      margin-bottom: 4px;
+    }
+
+    .ticker-price {
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .ticker-change {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ticker-change.up {
+      color: #4ade80; /* vert */
+    }
+
+    .ticker-change.down {
+      color: #f87171; /* rouge */
+    }
+
+    @keyframes scroll-left {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      text-align: center;
+      margin-top: 120px; /* espace pour menu + ticker */
+    }
+
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: auto;
+      color: #bbbfc2;
+    }
+
+    /* --- Action Cards --- */
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 3rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .action-card {
+      background-color: #1c2b38;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 280px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-card h3 {
+      color: #66bacf;
+      margin-bottom: 1rem;
+    }
+
+    .action-card p {
+      font-size: 0.95rem;
+      color: #bbbfc2;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #66bacf;
+      color: white;
+      font-weight: 600;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #539cb0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #bbbfc2;
+      font-size: 0.85rem;
+      background-color: #1c2b38;
+      margin-top: 4rem;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">CapiScop</div>
+    <ul>
+      <li><a href="#" class="active">Accueil</a></li>
+      <li><a href="{{ url_for('page_opcvm') }}">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}">ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+      
+    </ul>
+  </nav>
+
+  <!-- ✅ Barre des tickers avec icônes -->
+  <div class="ticker-bar">
+    <div class="ticker-track">
+      {% for item in indices %}
+        <div class="ticker-card">
+          <div class="ticker-name">{{ item.ticker }}</div>
+          <div class="ticker-price">{{ item.price }}</div>
+          <div class="ticker-change {% if item.change|float > 0 %}up{% elif item.change|float < 0 %}down{% endif %}">
+            {% if item.icon %}
+              <svg width="14" height="14">
+                <use href="{{ item.icon }}"></use>
+              </svg>
+            {% else %}
+              {% if item.change|float > 0 %}&#9650;{% elif item.change|float < 0 %}&#9660;{% endif %}
+            {% endif %}
+            {{ item.change }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- --- Hero --- -->
+  <section class="hero">
+    <h1>Optimisez votre stratégie d’investissement</h1>
+    <p>
+      Découvrez les OPCVM et les Actions similaires grâce à notre analyse intelligente par clustering,
+      et organisez votre portefeuille selon votre profil d'investisseur.
+    </p>
+
+    <div class="actions">
+      <div class="action-card">
+        <h3>OPCVM similaires</h3>
+        <p>Explorez les fonds appartenant au même groupe comportemental grâce à l’algorithme KMeans.</p>
+        <a href="{{ url_for('recherche1') }}" class="btn">Voir les Clusters</a>
+      </div>
+      <div class="action-card">
+        <h3>Créer votre portefeuille</h3>
+        <p>Générez un portefeuille optimisé selon votre profil : prudent, équilibré ou dynamique.</p>
+        <a href="#" class="btn">Personnaliser</a>
+      </div>
+      <div class="action-card">
+        <h3>actions similaires</h3>
+        <p>Explorez les Actions appartenant au même groupe comportemental grâce à l’algorithme KMeans</p>
+        <a href="{{ url_for('rechercheaction') }}" class="btn">Voir les Clusters</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 CapiScop - Tous droits réservés <br>
+    <span style="font-size:0.9rem; color:#66bacf;">Développé avec passion par Hajar Belhafid</span>
+  </footer>
+
+</body>
+</html>

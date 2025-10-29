@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Choix du profil investisseur - CapiScoop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0e7ff;
+      padding: 100px 40px 40px;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+    nav .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      cursor: default;
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+    nav .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(0, 191, 255, 0.9);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin-left: auto;
+      padding: 0;
+    }
+    nav ul li {
+      margin-left: 30px;
+    }
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+    nav ul li a:hover {
+      color: #66bacf;
+    }
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px #1e90ffaa;
+    }
+    p.intro {
+      font-weight: 400;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    /* Quiz styles */
+    .quiz-container {
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 15px;
+      padding: 25px 40px;
+      max-width: 600px;
+      margin: 0 auto 50px;
+      box-shadow: 0 0 20px rgba(102, 186, 207, 0.5);
+      color: #cbd5e1;
+      text-align: left;
+    }
+    .question {
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #66bacf;
+      text-shadow: 0 0 6px #1e90ffaa;
+    }
+    .answers label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-weight: 400;
+      font-size: 1rem;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .answers input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    .answers label:hover {
+      color: #1e90ff;
+    }
+    button#quiz-submit {
+      padding: 14px 50px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      background: #66bacf;
+      box-shadow: 0 0 15px #00bfffcc;
+      cursor: pointer;
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+      margin-top: 10px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button#quiz-submit:hover {
+      background: #1e90ff;
+      box-shadow: 0 0 30px #1e90ff;
+      transform: scale(1.05);
+    }
+
+    #profil-recommande {
+      margin-top: 25px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #b2c6cbff;
+      text-shadow: 0 0 8px #7198a2ff;
+      min-height: 50px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      user-select: none;
+      text-align: center;
+    }
+
+    /* Style cartes profils */
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(102, 186, 207, 0.5);
+      width: 250px;
+      padding: 25px;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      color: #cbd5e1;
+      text-align: left;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #00bfffcc;
+      color: #fff;
+    }
+    .card.selected {
+      border: 3px solid #fca311;
+      box-shadow: 0 0 30px #fca311cc;
+      color: #fca311;
+      transform: scale(1.07);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: inherit;
+      text-shadow: 0 0 6px currentColor;
+    }
+    .card p {
+      font-size: 0.95rem;
+      margin-top: 8px;
+      line-height: 1.3;
+      color: inherit;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 10px;
+      color: #66bacf;
+      text-shadow: 0 0 6px #1e90ffaa;
+    }
+    select#profil {
+      width: 280px;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border-radius: 15px;
+      border: none;
+      background: rgba(255 255 255 / 0.1);
+      color: #cbd5e1;
+      box-shadow: 0 0 8px #1e90ff66;
+      backdrop-filter: blur(10px);
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    select#profil:focus {
+      outline: none;
+      box-shadow: 0 0 15px #00bfffcc;
+      color: #fff;
+      background: rgba(255 255 255 / 0.15);
+    }
+    button {
+      padding: 14px 50px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      background: #66bacf;
+      box-shadow: 0 0 15px #00bfffcc;
+      cursor: pointer;
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #1e90ff;
+      box-shadow: 0 0 30px #1e90ff;
+      transform: scale(1.05);
+    }
+    #resultat {
+      margin-top: 30px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #fca311;
+      text-shadow: 0 0 8px #fca311aa;
+      min-height: 40px;
+    }
+
+    /* Style amélioré liste OPCVM */
+    #resultat ul {
+      list-style: none;
+      padding-left: 0;
+      max-width: 600px;
+      margin: 20px auto 0 auto;
+    }
+
+    #resultat ul li {
+      background: linear-gradient(135deg, #14213dcc, #0f3460cc);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(15, 52, 96, 0.8);
+      padding: 12px 18px 12px 40px;
+      margin-bottom: 14px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fca311;
+      position: relative;
+      cursor: default;
+      transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+
+    #resultat ul li:hover {
+      background: linear-gradient(135deg, #fca311cc, #fca311aa);
+      color: #14213d;
+      box-shadow: 0 4px 16px #fca311dd;
+    }
+
+    /* Petite icône avant chaque OPCVM (rond coloré) */
+    #resultat ul li::before {
+      content: '';
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #66bacf;
+      box-shadow: 0 0 6px #66bacf;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding: 100px 20px 40px;
+      }
+      select#profil {
+        width: 100%;
+      }
+      button {
+        width: 100%;
+      }
+      .cards-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .card {
+        width: 100%;
+        text-align: left;
+      }
+      .quiz-container {
+        padding: 20px;
+        width: 90%;
+      }
+      #resultat ul li {
+        font-size: 1.05rem;
+        padding-left: 38px;
+      }
+    }
+  </style>
+
+</head>
+<body>
+
+<nav>
+  <div class="logo">CapiScoop</div>
+    <ul>
+
+      <li><a href="{{ url_for('house') }}">Accueil</a></li>
+      <li><a href="{{ url_for('page_opcvm') }}class="active"">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}">ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+    </ul>
+</nav>
+
+<h1>Bienvenue sur CapiScoop</h1>
+<p class="intro">
+  Pour mieux vous conseiller, merci de répondre à ces quelques questions rapides.
+</p>
+
+<div class="quiz-container" role="form" aria-label="Mini diagnostic profil investisseur">
+  <div class="question" id="q1">
+    1. Quelle est votre principale motivation pour investir ?
+    <div class="answers">
+      <label><input type="radio" name="q1" value="prudent" /> Sécurité et préservation du capital</label>
+      <label><input type="radio" name="q1" value="modere" /> Croissance modérée et équilibre</label>
+      <label><input type="radio" name="q1" value="dynamique" /> Maximiser le rendement, accepter le risque</label>
+    </div>
+  </div>
+  <div class="question" id="q2">
+    2. Combien de temps pouvez-vous laisser votre argent investi ?
+    <div class="answers">
+      <label><input type="radio" name="q2" value="prudent" /> Moins de 3 ans</label>
+      <label><input type="radio" name="q2" value="modere" /> Entre 3 et 7 ans</label>
+      <label><input type="radio" name="q2" value="dynamique" /> Plus de 7 ans</label>
+    </div>
+  </div>
+  <div class="question" id="q3">
+    3. Si la valeur de votre portefeuille baisse de 10% en un mois, que faites-vous ?
+    <div class="answers">
+      <label><input type="radio" name="q3" value="prudent" /> Je vends pour limiter les pertes</label>
+      <label><input type="radio" name="q3" value="modere" /> J’attends de voir comment ça évolue</label>
+      <label><input type="radio" name="q3" value="dynamique" /> J’en profite pour acheter plus</label>
+    </div>
+  </div>
+
+  <button id="quiz-submit" type="button">Trouver mon profil</button>
+
+  <div id="profil-recommande" aria-live="polite" role="alert"></div>
+</div>
+
+<p class="intro">
+  Ou choisissez directement votre profil ci-dessous :
+</p>
+
+<!-- Infographie / cartes profils -->
+<div class="cards-container">
+  <div class="card" data-profil="prudent" tabindex="0" role="button" aria-pressed="false">
+    <h3>Prudent</h3>
+    <p>Vous privilégiez la sécurité et la préservation du capital. Vous acceptez peu de risques et cherchez une croissance stable.</p>
+  </div>
+  <div class="card" data-profil="modere" tabindex="0" role="button" aria-pressed="false">
+    <h3>Modéré</h3>
+    <p>Vous recherchez un équilibre entre risque et rendement, avec une approche diversifiée et mesurée.</p>
+  </div>
+  <div class="card" data-profil="dynamique" tabindex="0" role="button" aria-pressed="false">
+    <h3>Dynamique</h3>
+    <p>Vous êtes prêt à prendre plus de risques pour maximiser votre rendement à long terme.</p>
+  </div>
+</div>
+
+<label for="profil">Sélectionnez votre profil :</label>
+<select id="profil" aria-label="Choisissez votre profil investisseur">
+  <option value="" disabled selected>-- Choisissez un profil --</option>
+  <option value="prudent">Prudent</option>
+  <option value="modere">Modéré</option>
+  <option value="dynamique">Dynamique</option>
+</select>
+
+<!-- Partie ajoutée : choix nombre OPCVM -->
+<div style="margin: 25px 0; max-width: 600px; margin-left: auto; margin-right: auto; text-align: left;">
+  <label for="nombreOpcvm" style="font-weight: 600; font-size: 1.2rem; color: #66bacf; text-shadow: 0 0 6px #1e90ffaa;">
+    Nombre d’OPCVM à inclure (1 à 53) :
+  </label>
+  <input type="number" id="nombreOpcvm" name="nombreOpcvm" min="1" max="53" value="10" style="
+      width: 100px;
+      padding: 8px 12px;
+      font-size: 1.1rem;
+      border-radius: 15px;
+      border: none;
+      background: rgba(255 255 255 / 0.1);
+      color: #cbd5e1;
+      box-shadow: 0 0 8px #1e90ff66;
+      backdrop-filter: blur(10px);
+      margin-right: 15px;
+      cursor: pointer;
+    " />
+  <label style="color: #66bacf; user-select: none; cursor: pointer;">
+    <input type="checkbox" id="toutOpcvm" name="toutOpcvm" style="margin-right: 8px;" />
+    Inclure <strong>tous</strong> les OPCVM
+  </label>
+</div>
+
+<br />
+<button type="button" onclick="afficherProfil()">Valider</button>
+
+<div id="resultat" role="alert" aria-live="polite"></div>
+
+<!-- Bouton PDF caché au départ -->
+<button id="download-pdf" style="margin-top: 20px; background: #fca311; box-shadow: 0 0 15px #fca311cc; color: #14213d; display: none;">
+  Télécharger le rapport PDF
+</button>
+
+<script>
+    // Gestion du quiz et sélection du profil (inchangé)
+  const quizSubmitBtn = document.getElementById('quiz-submit');
+  const profilRecommandeDiv = document.getElementById('profil-recommande');
+  const selectProfil = document.getElementById('profil');
+  const cards = document.querySelectorAll('.card');
+  const resultatDiv = document.getElementById('resultat');
+
+  quizSubmitBtn.addEventListener('click', () => {
+    const q1 = document.querySelector('input[name="q1"]:checked');
+    const q2 = document.querySelector('input[name="q2"]:checked');
+    const q3 = document.querySelector('input[name="q3"]:checked');
+
+    if (!q1 || !q2 || !q3) {
+      profilRecommandeDiv.textContent = 'Merci de répondre à toutes les questions.';
+      return;
+    }
+
+    const votes = [q1.value, q2.value, q3.value];
+    const counts = { prudent: 0, modere: 0, dynamique: 0 };
+    votes.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+
+    const maxVotes = Math.max(counts.prudent, counts.modere, counts.dynamique);
+    const profilsMax = Object.keys(counts).filter(key => counts[key] === maxVotes);
+
+    let profilFinal = profilsMax[0];
+    profilRecommandeDiv.textContent = `Profil sélectionné : ${profilFinal.charAt(0).toUpperCase() + profilFinal.slice(1)}`;
+    selectProfil.value = profilFinal;
+
+    cards.forEach(card => {
+      if (card.dataset.profil === profilFinal) {
+        card.classList.add('selected');
+        card.setAttribute('aria-pressed', 'true');
+      } else {
+        card.classList.remove('selected');
+        card.setAttribute('aria-pressed', 'false');
+      }
+    });
+  });
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => {
+        c.classList.remove('selected');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      card.classList.add('selected');
+      card.setAttribute('aria-pressed', 'true');
+      selectProfil.value = card.dataset.profil;
+      profilRecommandeDiv.textContent = `Profil sélectionné : ${card.dataset.profil.charAt(0).toUpperCase() + card.dataset.profil.slice(1)}`;
+    });
+    card.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+  selectProfil.addEventListener('change', () => {
+    const selectedValue = selectProfil.value;
+    profilRecommandeDiv.textContent = `Profil sélectionné : ${selectedValue.charAt(0).toUpperCase() + selectedValue.slice(1)}`;
+    cards.forEach(card => {
+      if (card.dataset.profil === selectedValue) {
+        card.classList.add('selected');
+        card.setAttribute('aria-pressed', 'true');
+      } else {
+        card.classList.remove('selected');
+        card.setAttribute('aria-pressed', 'false');
+      }
+    });
+  });
+
+  // Fonction simplifiée pour afficher le profil (sans OPCVM)
+  function afficherProfil() {
+    const profil = selectProfil.value;
+    if (!profil) {
+      alert('Veuillez sélectionner un profil.');
+      return;
+    }
+
+    resultatDiv.innerHTML = `Profil sélectionné : <strong>${profil.charAt(0).toUpperCase() + profil.slice(1)}</strong>`;
+    
+    // Afficher bouton PDF
+    document.getElementById('download-pdf').style.display = 'inline-block';
+  }
+
+  // Fonction pour générer le PDF depuis le contenu affiché
+  document.getElementById('download-pdf').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const titre = "Rapport Profil Investisseur CapiScoop";
+    doc.setFontSize(20);
+    doc.setTextColor("#fca311");
+    doc.text(titre, 15, 20);
+
+    const contenu = document.getElementById('resultat').innerText;
+
+    doc.setFontSize(12);
+    doc.setTextColor("#000000");
+    doc.text(contenu, 15, 40, { maxWidth: 180 });
+
+    doc.save('rapport_profil_capiscoop.pdf');
+  });
+
+  // Gérer le checkbox "Inclure tous les OPCVM"
+  document.getElementById('toutOpcvm').addEventListener('change', (e) => {
+    const nombreOpcvmInput = document.getElementById('nombreOpcvm');
+    if (e.target.checked) {
+      nombreOpcvmInput.value = 53;
+      nombreOpcvmInput.disabled = true;
+    } else {
+      nombreOpcvmInput.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>

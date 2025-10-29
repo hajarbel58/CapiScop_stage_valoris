@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Récapitulatif Panier OPCVM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0e7ff;
+      padding: 80px 40px 40px;
+      min-height: 100vh;
+      margin: 0;
+    }
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+    nav .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      cursor: default;
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+    nav .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(0, 191, 255, 0.9);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin-left: auto;
+      padding: 0;
+    }
+    nav ul li {
+      margin-left: 30px;
+    }
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+    nav ul li a:hover {
+      color: #1e90ff;
+    }
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+    
+    h1 {
+      color: #66bacf;
+      text-shadow: 0 0 8px #1e90ffaa;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    /* Layout container for profile and OPCVM list */
+    .info-container {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .info-box {
+      background: rgba(255 255 255 / 0.1);
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(102, 186, 207, 0.5);
+      min-width: 280px;
+      max-width: 360px;
+      color: #cbd5e1;
+    }
+    .info-box h2 {
+      color: #66bacf;
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-shadow: 0 0 6px #1e90ffaa;
+    }
+    .info-box p,
+    .info-box ul {
+      font-weight: 500;
+      margin: 0;
+    }
+    .info-box ul {
+      padding-left: 20px;
+      margin-top: 10px;
+      list-style-type: disc;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .info-box ul li {
+      margin-bottom: 8px;
+    }
+
+    /* Pondérations plus visibles */
+    .ponderations-box {
+      background: rgba(252, 163, 17, 0.15);
+      border-radius: 15px;
+      padding: 25px 35px;
+      max-width: 600px;
+      margin: 0 auto 50px;
+      box-shadow: 0 0 30px #fca311cc;
+      color: #fca311;
+      text-align: center;
+    }
+    .ponderations-box h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-shadow: 0 0 12px #fca311dd;
+    }
+    .ponderations-box ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0 auto;
+      max-width: 400px;
+      text-align: left;
+      columns: 2;
+      column-gap: 40px;
+    }
+    .ponderations-box ul li {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #fca311aa;
+      padding-bottom: 6px;
+    }
+
+    /* Wrapper bouton retour et pdf */
+    .btn-wrapper {
+      position: relative;
+      height: 60px;
+      margin-top: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Bouton retour à gauche */
+    .btn-retour {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 14px 50px;
+      background-color: #66bacf;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00bfffcc;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      max-width: 200px;
+      user-select: none;
+    }
+    .btn-retour:hover {
+      background: #66bacf;
+      box-shadow: 0 0 30px #66bacf;
+      transform: translateY(-50%) scale(1.07);
+    }
+
+    /* Bouton PDF à droite */
+    .btn-retour1 {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 14px 50px;
+      background-color: #66bacf;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00bfffcc;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      max-width: 200px;
+      user-select: none;
+    }
+    .btn-retour1:hover {
+      background: #66bacf;
+      box-shadow: 0 0 30px #66bacf;
+      transform: translateY(-50%) scale(1.07);
+    }
+
+    @media (max-width: 720px) {
+      .info-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .info-box {
+        max-width: 90vw;
+        min-width: unset;
+      }
+      .ponderations-box ul {
+        columns: 1;
+      }
+      .btn-wrapper {
+        height: auto;
+        margin-top: 30px;
+      }
+      .btn-retour, .btn-retour1 {
+        position: static;
+        transform: none;
+        display: block;
+        width: 100%;
+        max-width: unset;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">CapiScoop</div>
+
+  <ul>
+
+      li><a href="{{ url_for('house') }}">Accueil</a></li>
+      <li><a href="{{ url_for('page_opcvm') }} class="active">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}" >ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+  </ul>
+</nav>
+
+<h1>Récapitulatif de votre panier</h1>
+
+<div class="info-container">
+  <div class="info-box">
+    <h2>Profil sélectionné</h2>
+    <p id="profilChoisi">Chargement...</p>
+  </div>
+
+  <div class="info-box">
+    <h2>OPCVM choisis</h2>
+    <ul id="listeOpcvmChoisis">
+      <li>Chargement...</li>
+    </ul>
+  </div>
+</div>
+
+<div class="ponderations-box">
+  <h2>Pondérations optimales</h2>
+  <ul id="listePonderations">
+    <li>Chargement...</li>
+  </ul>
+</div>
+
+<div class="btn-wrapper">
+  <button class="btn-retour" onclick="retourChoix()">Retour au choix</button>
+  <button id="download-pdf" class="btn-retour1">Télécharger le rapport PDF</button>
+</div>
+
+<script>
+  const profil = localStorage.getItem('profil');
+  const opcvmSelectionnes = JSON.parse(localStorage.getItem('opcvmSelectionnes') || "[]");
+
+  const profilEl = document.getElementById('profilChoisi');
+  const listeEl = document.getElementById('listeOpcvmChoisis');
+  const listePonderationsEl = document.getElementById('listePonderations');
+
+  // Afficher profil
+  if (profil) {
+    profilEl.textContent = profil.charAt(0).toUpperCase() + profil.slice(1);
+  } else {
+    profilEl.textContent = "Aucun profil sélectionné.";
+  }
+
+  // Afficher OPCVM choisis
+  if (opcvmSelectionnes.length > 0) {
+    listeEl.innerHTML = "";
+    opcvmSelectionnes.forEach(opcvm => {
+      const li = document.createElement('li');
+      li.textContent = opcvm;
+      listeEl.appendChild(li);
+    });
+  } else {
+    listeEl.innerHTML = '<li>Aucun OPCVM sélectionné.</li>';
+  }
+
+  // Récupérer pondérations depuis backend
+  if (profil && opcvmSelectionnes.length > 0) {
+    fetch("/calcul_ponderations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ profil: profil, opcvm: opcvmSelectionnes })
+    })
+    .then(res => res.json())
+    .then(data => {
+      listePonderationsEl.innerHTML = "";
+      if (data.erreur) {
+        listePonderationsEl.innerHTML = `<li>Erreur : ${data.erreur}</li>`;
+      } else {
+        for (const [nom, val] of Object.entries(data)) {
+          const li = document.createElement('li');
+          li.textContent = `${nom} : ${(val * 100).toFixed(2)} %`;
+          listePonderationsEl.appendChild(li);
+        }
+      }
+    })
+    .catch(err => {
+      listePonderationsEl.innerHTML = "<li>Erreur serveur : voir console.</li>";
+      console.error(err);
+    });
+  } else {
+    listePonderationsEl.innerHTML = "<li>Profil ou OPCVM manquants.</li>";
+  }
+
+  function retourChoix() {
+    window.location.href = '/'; // adapte cette URL selon ton projet
+  }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // Attendre que le DOM soit prêt (optionnel mais recommandé)
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('download-pdf');
+    btn.addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Récupérer les infos
+      const profil = document.getElementById('profilChoisi').innerText;
+      const opcvmItems = Array.from(document.querySelectorAll('#listeOpcvmChoisis li')).map(li => li.innerText);
+      const ponderationsItems = Array.from(document.querySelectorAll('#listePonderations li')).map(li => li.innerText);
+
+      // Construire le texte PDF
+      let contenu = `Profil sélectionné:\n${profil}\n\nOPCVM choisis:\n`;
+      opcvmItems.forEach(item => {
+        contenu += `- ${item}\n`;
+      });
+      contenu += `\nPondérations optimales:\n`;
+      ponderationsItems.forEach(item => {
+        contenu += `- ${item}\n`;
+      });
+
+      // Titre
+      doc.setFontSize(18);
+      doc.setTextColor("#66bacf");
+      doc.text("Rapport CapiScoop - Récapitulatif Panier OPCVM", 10, 20);
+
+      // Contenu texte, gestion saut de page simple
+      doc.setFontSize(12);
+      doc.setTextColor("#25262bff");
+      let y = 40;
+      const lineHeight = 7;
+      const pageHeight = doc.internal.pageSize.height;
+      const margin = 10;
+
+      const lines = doc.splitTextToSize(contenu, 180);
+      lines.forEach(line => {
+        if (y > pageHeight - margin) {
+          doc.addPage();
+          y = margin;
+        }
+        doc.text(line, margin, y);
+        y += lineHeight;
+      });
+
+      // Sauvegarder et lancer téléchargement
+      doc.save("rapport_panier_opcvm.pdf");
+    });
+  });
+</script>
+
+</body>
+</html>

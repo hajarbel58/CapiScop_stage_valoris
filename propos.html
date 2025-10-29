@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Propos - ASFIM</title>
+</head>
+<body>
+    <h1>Propos</h1>
+    <p>Cliquez sur le bouton pour recevoir le dernier tableau ASFIM par email :</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li style="color: {% if category == 'error' %}red{% else %}green{% endif %}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <input type="email" name="email" placeholder="Votre email" required>
+        <button type="submit">Recevoir le dernier tableau</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Optimisation de portefeuille</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 30px; background: #f4f7fa; }
+    h2 { color: #2c5364; }
+    form { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); max-width: 500px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; }
+    button { margin-top: 20px; padding: 12px; width: 100%; background: #2c5364; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #203a43; }
+    .result { margin-top: 30px; padding: 20px; background: #e0f7fa; border-radius: 8px; }
+    .slider-value { margin-top: 5px; font-weight: normal; }
+  </style>
+</head>
+<body>
+  <h2>Composez votre portefeuille</h2>
+  <form method="POST">
+    <label for="profil">Profil</label>
+    <select name="profil" id="profil">
+      <option value="prudent">Prudent</option>
+      <option value="modere">Modéré</option>
+      <option value="dynamique">Dynamique</option>
+    </select>
+
+    <label for="rendement">Rendement espéré (%)</label>
+    <input type="range" step="0.01" min="0" max="20" name="rendement" id="rendement" value="5" oninput="rendVal.value = this.value">
+    <output id="rendVal" class="slider-value">5</output>
+
+    <label for="risque">Risque maximum toléré (%)</label>
+    <input type="range" step="0.01" min="0" max="20" name="risque" id="risque" value="5" oninput="riskVal.value = this.value">
+    <output id="riskVal" class="slider-value">5</output>
+
+    <button type="submit">Optimiser</button>
+  </form>
+
+  {% if result %}
+  <div class="result">
+    {% if result.error %}
+      <p style="color:red;"><b>Erreur :</b> {{ result.error }}</p>
+    {% else %}
+      <h3>Résultats pour le profil : {{ result.profil }}</h3>
+      <p><b>Rendement attendu :</b> {{ result.rendement | round(3) }}%</p>
+      <p><b>Risque :</b> {{ result.risque | round(3) }}%</p>
+      <p><b>Capital nécessaire :</b> {{ result.capital }}</p>
+      <h4>Pondérations du portefeuille :</h4>
+      <ul>
+        {% for action, poids in result.poids.items() %}
+        <li>{{ action }} : {{ poids }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+  {% endif %}
+</body>
+</html>

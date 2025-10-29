@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portail Utilisateur</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 80px 30px 30px;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Poppins', sans-serif;
+      color: #e0e7ff;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(102, 186, 207, 0.9);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #66bacf;
+      border-bottom-color: #66bacf;
+    }
+
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .card {
+      background-color: #1c2b38;
+      border-radius: 1rem;
+      padding: 2rem;
+      color: #e0e7ff;
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .card-header {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #66bacf;
+      padding-bottom: 0.5rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #66bacf;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 2rem;
+      padding: 0.75rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #539cb0;
+    }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .alert.success { background-color: #4ade80; color: #0f172a; }
+    .alert.danger { background-color: #f87171; color: #0f172a; }
+    .alert.info { background-color: #3b82f6; color: #fff; }
+
+    h2.text-center {
+      font-family: 'Montserrat', sans-serif;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .row { display: flex; gap: 2rem; }
+      .col-md-6 { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">CapiScop</div>
+    <ul>
+      
+      <li><a href="{{ url_for('house') }}" >Accueil</a></li>
+      <li><a href="{{ url_for('page_opcvm') }}">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}">ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}"  class="active">Portail</a></li>      
+    </ul>
+  </nav>
+
+  <div class="container py-5">
+    <h2 class="text-center">Portail Utilisateur</h2>
+
+    <!-- Messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+      <!-- Formulaire Inscription -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">Créer un compte</div>
+          <div class="card-body">
+            <form method="POST" action="/portail">
+              <input type="hidden" name="action" value="register">
+              <label>Nom d’utilisateur</label>
+              <input type="text" name="username" required>
+
+              <label>Email</label>
+              <input type="email" name="email" required>
+
+              <label>Mot de passe</label>
+              <input type="password" name="password" required>
+
+              <label>Sexe</label>
+              <select name="gender" required>
+                <option value="">Sélectionner</option>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+              </select>
+
+              <button type="submit">S’inscrire</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire Connexion -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">Connexion</div>
+          <div class="card-body">
+            <form method="POST" action="/portail">
+              <input type="hidden" name="action" value="login">
+              <label>Email</label>
+              <input type="email" name="email" required>
+
+              <label>Mot de passe</label>
+              <input type="password" name="password" required>
+
+              <button type="submit">Se connecter</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

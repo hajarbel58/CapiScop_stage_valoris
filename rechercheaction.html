@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recherche Actions - CapiScoop</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #e0e7ff;
+    min-height: 100vh;
+    padding: 100px 30px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Effet particules en fond */
+  .particles {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    z-index:0;
+    overflow:hidden;
+    background: transparent;
+  }
+  .particles span {
+    position: absolute;
+    display:block;
+    width:6px; height:6px;
+    background: rgba(102,186,207,0.7);
+    border-radius:50%;
+    animation: float 15s linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(100vh) scale(0); opacity:0; }
+    50% { opacity:1; }
+    100% { transform: translateY(-10vh) scale(1.2); opacity:0; }
+  }
+
+      nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(102, 186, 207, 0.9);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #66bacf;
+      border-bottom-color: #66bacf;
+    }
+
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+  h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(270deg,#66bacf,#fca311,#66bacf);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 10s ease infinite;
+    margin-top:100px;
+    margin-bottom:20px;
+    text-align:center;
+  }
+  @keyframes gradientMove {
+    0% { background-position:0% 50% }
+    50% { background-position:100% 50% }
+    100% { background-position:0% 50% }
+  }
+
+  .subtitle {
+    font-size:1.2rem;
+    color:#e0e7ff;
+    text-align:center;
+    margin-bottom:40px;
+    opacity:0.9;
+  }
+
+  form {
+    display:flex; gap:12px; width:100%; max-width:500px; margin-bottom:20px; z-index:1001;
+  }
+  input[type="search"] {
+    flex:1; padding:14px 20px; border-radius:25px; border:none;
+    background: rgba(255 255 255 / 0.1); color:#cbd5e1; font-size:1.1rem;
+    box-shadow:0 0 8px #1e90ff66;
+  }
+  input[type="search"]:focus {
+    outline:none; box-shadow:0 0 15px #00bfffcc; color:#fff;
+    background: rgba(255 255 255 / 0.15);
+  }
+  button {
+    padding:14px 32px; border:none; border-radius:25px; font-size:1.1rem; font-weight:700;
+    color:#fff; background:#66bacf; box-shadow:0 0 15px #00bfffcc; cursor:pointer; transition:0.4s;
+  }
+  button:hover { box-shadow:0 0 30px #66bacf; transform:scale(1.07); }
+
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 1000px;
+    z-index: 1001;
+    animation: fadeInUp 1s ease-in-out;
+  }
+
+  .stat {
+    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 28px 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0,191,255,0.15);
+    transition: all 0.35s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, #66bacf, #fca311, #66bacf);
+    animation: rotate 6s linear infinite;
+    opacity: 0.12;
+    z-index: 0;
+  }
+
+  .stat:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 0 35px rgba(102,186,207,0.6);
+  }
+
+  .stat p {
+    font-size: 1rem;
+    color: #e0e7ff;
+    margin: 0 0 10px 0;
+    opacity:0.85;
+    z-index:1;
+    position: relative;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Ticker Top 5 */
+  .ticker-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding: 5px 0;
+  }
+
+  .ticker {
+    display: inline-flex;
+    gap: 20px;
+    white-space: nowrap;
+    animation: scrollTicker 20s linear infinite;
+  }
+
+  .ticker span {
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.05);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.95rem; /* texte discret */
+    transition: all 0.3s ease;
+  }
+
+  .ticker span:hover {
+    background: rgba(102,186,207,0.3);
+    transform: scale(1.05);
+  }
+
+  @keyframes scrollTicker {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-wrapper:hover .ticker {
+    animation-play-state: paused;
+  }
+</style>
+</head>
+<body>
+
+<div class="particles">
+  <span style="left:10%; animation-delay:0s;"></span>
+  <span style="left:30%; animation-delay:3s;"></span>
+  <span style="left:50%; animation-delay:6s;"></span>
+  <span style="left:70%; animation-delay:1s;"></span>
+  <span style="left:90%; animation-delay:5s;"></span>
+</div>
+
+<nav>
+  <div class="logo">CapiScoop</div>
+  <ul>
+    <li><a href="{{ url_for('house') }}">Accueil</a></li>
+    
+      
+      <li><a href="{{ url_for('page_opcvm') }}">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}" class="active">ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}">Benchmark</a></li>
+      <li><a href="{{ url_for('portefeuil') }}">PortfolioS</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+  </ul>
+</nav>
+
+<h1>Rechercher une Action</h1>
+<p class="subtitle">Accédez aux informations clés du marché en un instant ⚡</p>
+
+<form id="search-form">
+  <input type="search" id="search-input" placeholder="Tapez le nom de l'action..." aria-label="Recherche Action" required />
+  <button type="submit"> Rechercher</button>
+</form>
+
+<!-- Bouton vers Portefeuille -->
+<div style="margin-top:20px; z-index:1001;">
+  <button onclick="window.location.href='{{ url_for('personalised') }}'">
+    Construire mon portefeuille
+  </button>
+</div>
+
+<div class="quick-stats">
+  <!-- Ticker Top 5 -->
+  <div class="stat">
+    <p>Top 5 actions de la semaine</p>
+    <div class="ticker-wrapper">
+      <div class="ticker">
+        <span>SNA MC Equity 1.15% ▲</span>
+        <span>STR MC Equity 1.10% ▲</span>
+        <span>FBR MC Equity 0.99% ▲</span>
+        <span>ZDJ MC Equity 0.73% ▲</span>
+        <span>S2M MC Equity 0.60% ▲</span>
+        <!-- duplication pour boucle continue -->
+        <span>SNA MC Equity 1.15% ▲</span>
+        <span>STR MC Equity 1.10% ▲</span>
+        <span>FBR MC Equity 0.99% ▲</span>
+        <span>ZDJ MC Equity 0.73% ▲</span>
+        <span>S2M MC Equity 0.60% ▲</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat">
+    <span></span>
+    <p>Rendement moyen du marché</p>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('search-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const query = document.getElementById('search-input').value.trim();
+    if(query.length === 0) return;
+    const url = '/resultataction?nom=' + encodeURIComponent(query);
+    window.location.href = url;
+  });
+</script>
+
+</body>
+</html>

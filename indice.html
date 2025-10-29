@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indices Bourse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 80px 30px 30px;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Poppins', sans-serif;
+      color: #e0e7ff;
+      min-height: 100vh;
+    }
+
+    /* Barre de navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(15, 32, 39, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      z-index: 1000;
+      backdrop-filter: blur(6px);
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.6rem;
+      color: #66bacf;
+      user-select: none;
+      text-shadow: 2px 2px 6px rgba(102, 186, 207, 0.7);
+      transition: transform 0.25s ease, text-shadow 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.1) rotate(-3deg);
+      text-shadow: 4px 4px 12px rgba(102, 186, 207, 0.9);
+      cursor: pointer;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin-left: 30px;
+    }
+
+    nav ul li a {
+      color: #a0aec0;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      padding-bottom: 6px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #66bacf;
+      border-bottom-color: #66bacf;
+    }
+
+    nav ul li a.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    /* Titre */
+    h1 {
+      margin: 40px 0 20px;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(102,186,207,0.8);
+    }
+
+    /* Tableau */
+    table {
+      width: 95%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background: rgba(28, 43, 56, 0.85);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      animation: fadeInUp 1s ease;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: center;
+    }
+
+    th {
+      background: rgba(102, 186, 207, 0.9);
+      color: #fff;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    td {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.95rem;
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.07);
+      transition: 0.3s ease-in-out;
+    }
+
+    /* Couleurs dynamiques */
+    .positive {
+      color: #4caf50;
+      font-weight: 600;
+    }
+    .negative {
+      color: #f44336;
+      font-weight: 600;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #bbbfc2;
+      font-size: 0.85rem;
+      background-color: #1c2b38;
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Animation d'apparition */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">CapiScop</div>
+    <ul>
+
+      <li><a href="{{ url_for('house') }}">Accueil</a></li>
+      <li><a href="{{ url_for('page_opcvm') }}">OPCVM</a></li>
+      <li><a href="{{ url_for('recherche1') }}">ClusterO</a></li>
+      <li><a href="{{ url_for('rechercheaction') }}" >ClusterS</a></li>
+      <li><a href="{{ url_for('indice') }}"class="active">Benchmark</a></li>
+      <li><a href="{{ url_for('portail') }}">Portail</a></li>
+    </ul>
+  </nav>
+
+  <h1> Indices de la Bourse de Casablanca</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Indice</th>
+        <th>Valeur</th>
+        <th>Veille</th>
+        <th>Variation %</th>
+        <th>Variation 31/12</th>
+        <th>Plus haut</th>
+        <th>Plus bas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in indices %}
+      <tr>
+        <td>{{ row['Indice'] }}</td>
+        <td>{{ row['Valeur'] }}</td>
+        <td>{{ row['Veille'] }}</td>
+        <td class="{% if row['Variation %']|replace(',','.')|float >= 0 %}positive{% else %}negative{% endif %}">
+          {{ row['Variation %'] }}
+        </td>
+        <td>{{ row['Variation 31/12'] }}</td>
+        <td>{{ row['Plus haut'] }}</td>
+        <td>{{ row['Plus bas'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <footer>
+    &copy; 2025 CapiScop - Données Bourse de Casablanca
+  </footer>
+
+</body>
+</html>
